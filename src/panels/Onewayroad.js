@@ -1,7 +1,7 @@
 import { Panel, PanelHeader, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
-import PersikImage from '../assets/persik.png';
+import RoadImage from '../assets/onewayroad.png';
 
 export const Persik = ({ id }) => {
   const routeNavigator = useRouteNavigator();
@@ -12,7 +12,7 @@ export const Persik = ({ id }) => {
         Persik
       </PanelHeader>
       <Placeholder>
-        <img width={230} src={PersikImage} alt="Persik The Cat" />
+        <img width={230} src={RoadImage} alt="one-way_road" />
       </Placeholder>
     </Panel>
   );

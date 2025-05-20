@@ -20,7 +20,7 @@ export const Home = ({ id, fetchedUser }) => {
       <Group header={<Header size="s">Navigation Example</Header>}>
         <Div>
           <Button stretched size="l" mode="secondary" onClick={() => routeNavigator.push('persik')}>
-            Покажите Персика, пожалуйста!
+            Тестовая кнопка!
           </Button>
         </Div>
       </Group>
