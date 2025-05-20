@@ -1,2 +1,2 @@
-export { Persik } from './Onewayroad';
+export { Onewayroad } from './Onewayroad';
 export { Home } from './Home';
