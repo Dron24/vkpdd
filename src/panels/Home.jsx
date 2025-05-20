@@ -7,12 +7,13 @@ import {
   Cell,
   Div,
   Avatar,
+  Spacing,
+  Separator,
 } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 
 export const Home = ({ id, fetchedUser }) => {
-  const { photo_200, city, first_name, last_name } = { ...fetchedUser };
   const routeNavigator = useRouteNavigator();
 
   return (
@@ -22,15 +23,17 @@ export const Home = ({ id, fetchedUser }) => {
       {fetchedUser && (
         <Group header={<Header mode="secondary">Добро пожаловать</Header>}>
           <Cell
-            before={photo_200 && <Avatar src={photo_200} />}
-            subtitle={city?.title}
+            before={
+              fetchedUser.photo_200 && <Avatar src={fetchedUser.photo_200} />
+            }
+            subtitle={fetchedUser.city?.title}
           >
-            {`${first_name} ${last_name}`}
+            {`${fetchedUser.first_name} ${fetchedUser.last_name}`}
           </Cell>
         </Group>
       )}
 
-      <Group header={<Header mode="primary">Разделы</Header>}>
+      <Group header={<Header mode="primary">Разделы ПДД</Header>}>
         <Div>
           <Button
             stretched
@@ -41,15 +44,48 @@ export const Home = ({ id, fetchedUser }) => {
             🚧 Дорожные знаки
           </Button>
         </Div>
+
         <Div>
           <Button
             stretched
             size="l"
-            mode="secondary"
-            disabled
+            mode="primary"
+            onClick={() => routeNavigator.push('markup')}
           >
-            📚 Теория (скоро)
+            🛣️ Дорожная разметка
           </Button>
+        </Div>
+
+        <Div>
+          <Button
+            stretched
+            size="l"
+            mode="primary"
+            onClick={() => routeNavigator.push('rules')}
+          >
+            📘 Общие правила
+          </Button>
+        </Div>
+
+        <Div>
+          <Button
+            stretched
+            size="l"
+            mode="primary"
+            onClick={() => routeNavigator.push('tests')}
+          >
+            🧠 Пройти тест
+          </Button>
+        </Div>
+      </Group>
+
+      <Spacing size={16} />
+      <Separator />
+      <Spacing size={8} />
+
+      <Group header={<Header mode="secondary">О приложении</Header>}>
+        <Div>
+          Это учебное мини-приложение поможет вам изучить Правила дорожного движения, пройти тесты и подготовиться к экзамену.
         </Div>
       </Group>
     </Panel>
