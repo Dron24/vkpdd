@@ -24,13 +24,11 @@ export const App = () => {
     <SplitLayout>
       <SplitCol>
         <View activePanel={activePanel}>
-          <View activePanel={activePanel}>
-            <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
-            <Onewayroad id={DEFAULT_VIEW_PANELS.ONEWAYROAD} />
-            <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
-            <Rules id={DEFAULT_VIEW_PANELS.RULES} />
-            <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
-          </View>
+          <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
+          <Onewayroad id={DEFAULT_VIEW_PANELS.ONEWAYROAD} />
+          <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
+          <Rules id={DEFAULT_VIEW_PANELS.RULES} />
+          <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
         </View>
       </SplitCol>
       {popout}
