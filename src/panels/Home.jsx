@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Panel,
   PanelHeader,
@@ -7,85 +8,69 @@ import {
   Cell,
   Div,
   Avatar,
-  Spacing,
-  Separator,
 } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 
 export const Home = ({ id, fetchedUser }) => {
+  const { photo_200, city, first_name, last_name } = { ...fetchedUser };
   const routeNavigator = useRouteNavigator();
 
   return (
     <Panel id={id}>
-      <PanelHeader>ПДД Учебник</PanelHeader>
+      <PanelHeader>Учебник ПДД</PanelHeader>
 
       {fetchedUser && (
-        <Group header={<Header mode="secondary">Добро пожаловать</Header>}>
+        <Group header={<Header size="s">Профиль пользователя</Header>}>
           <Cell
-            before={
-              fetchedUser.photo_200 && <Avatar src={fetchedUser.photo_200} />
-            }
-            subtitle={fetchedUser.city?.title}
+            before={photo_200 && <Avatar src={photo_200} />}
+            subtitle={city?.title}
           >
-            {`${fetchedUser.first_name} ${fetchedUser.last_name}`}
+            {`${first_name} ${last_name}`}
           </Cell>
         </Group>
       )}
 
-      <Group header={<Header mode="primary">Разделы ПДД</Header>}>
+      <Group header={<Header size="s">Разделы учебника</Header>}>
         <Div>
           <Button
             stretched
             size="l"
-            mode="primary"
-            onClick={() => routeNavigator.push('onewayroad')}
+            mode="secondary"
+            onClick={() => routeNavigator.push('/markup')}
           >
-            🚧 Дорожные знаки
+            Дорожная разметка
           </Button>
         </Div>
-
         <Div>
           <Button
             stretched
             size="l"
-            mode="primary"
-            onClick={() => routeNavigator.push('markup')}
+            mode="secondary"
+            onClick={() => routeNavigator.push('/rules')}
           >
-            🛣️ Дорожная разметка
+            Правила дорожного движения
           </Button>
         </Div>
-
         <Div>
           <Button
             stretched
             size="l"
-            mode="primary"
-            onClick={() => routeNavigator.push('rules')}
+            mode="secondary"
+            onClick={() => routeNavigator.push('/tests')}
           >
-            📘 Общие правила
+            Тесты по ПДД
           </Button>
         </Div>
-
         <Div>
           <Button
             stretched
             size="l"
-            mode="primary"
-            onClick={() => routeNavigator.push('tests')}
+            mode="secondary"
+            onClick={() => routeNavigator.push('/onewayroad')}
           >
-            🧠 Пройти тест
+            Пример: Односторонняя дорога
           </Button>
-        </Div>
-      </Group>
-
-      <Spacing size={16} />
-      <Separator />
-      <Spacing size={8} />
-
-      <Group header={<Header mode="secondary">О приложении</Header>}>
-        <Div>
-          Это учебное мини-приложение поможет вам изучить Правила дорожного движения, пройти тесты и подготовиться к экзамену.
         </Div>
       </Group>
     </Panel>
