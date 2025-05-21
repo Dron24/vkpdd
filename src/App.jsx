@@ -7,9 +7,9 @@ import { Home, Markup, Rules, Tests, Progress, Profile } from './panels';
 import { DEFAULT_VIEW_PANELS } from './routes';
 
 import AppTabbar from './components/AppTabbar';
+import RedirectToHome from './panels/RedirectToHome';
 
 export const App = () => {
-  // Получаем активные view и panel из маршрутизатора
   const {
     view: activeView,
     panel: activePanel = DEFAULT_VIEW_PANELS.HOME,
@@ -39,6 +39,9 @@ export const App = () => {
     <SplitLayout popout={popout}>
       <SplitCol>
         <View nav={activeView} activePanel={activePanel}>
+          {/* 🔧 добавляем id, чтобы удовлетворить требования View */}
+          <RedirectToHome id={DEFAULT_VIEW_PANELS.ROOT} />
+
           <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
           <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
           <Rules id={DEFAULT_VIEW_PANELS.RULES} />
@@ -51,4 +54,3 @@ export const App = () => {
     </SplitLayout>
   );
 };
-

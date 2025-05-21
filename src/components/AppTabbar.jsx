@@ -5,81 +5,72 @@ import {
   Icon28BookOutline,
   Icon28CheckCircleOutline,
   Icon28GraphOutline,
-  Icon28UserCircleOutline
+  Icon28UserCircleOutline,
 } from '@vkontakte/icons';
 
 import {
   useRouteNavigator,
-  useActiveVkuiLocation
+  useActiveVkuiLocation,
 } from '@vkontakte/vk-mini-apps-router';
 
 import { DEFAULT_VIEW_PANELS } from '../routes';
+import React from 'react';
 
 const AppTabbar = () => {
   const navigator = useRouteNavigator();
   const { panel } = useActiveVkuiLocation(); // Получаем текущую панель
 
+  const tabs = [
+    {
+      id: DEFAULT_VIEW_PANELS.HOME,
+      icon: <Icon28HomeOutline />,
+      text: 'Главная',
+    },
+    {
+      id: DEFAULT_VIEW_PANELS.MARKUP,
+      icon: <Icon28ListOutline />,
+      text: 'Разметка',
+    },
+    {
+      id: DEFAULT_VIEW_PANELS.RULES,
+      icon: <Icon28BookOutline />,
+      text: 'ПДД',
+    },
+    {
+      id: DEFAULT_VIEW_PANELS.TESTS,
+      icon: <Icon28CheckCircleOutline />,
+      text: 'Тесты',
+    },
+    {
+      id: DEFAULT_VIEW_PANELS.PROGRESS,
+      icon: <Icon28GraphOutline />,
+      text: 'Прогресс',
+    },
+    {
+      id: DEFAULT_VIEW_PANELS.PROFILE,
+      icon: <Icon28UserCircleOutline />,
+      text: 'Профиль',
+    },
+  ];
+
   return (
     <Tabbar>
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.HOME}`)}
-        text="Главная"
-        aria-label="Главная"
-        selected={panel === DEFAULT_VIEW_PANELS.HOME}
-        className={panel === DEFAULT_VIEW_PANELS.HOME ? 'text-green-700' : ''}
-      >
-        <Icon28HomeOutline />
-      </TabbarItem>
+      {tabs.map(({ id, icon, text }) => {
+        const isActive = panel === id;
+        const color = isActive ? '#00FF00' : '#FFA500';
 
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.MARKUP}`)}
-        text="Разметка"
-        aria-label="Разметка"
-        selected={panel === DEFAULT_VIEW_PANELS.MARKUP}
-        className={panel === DEFAULT_VIEW_PANELS.MARKUP ? 'text-green-700' : ''}
-      >
-        <Icon28ListOutline />
-      </TabbarItem>
-
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.RULES}`)}
-        text="ПДД"
-        aria-label="Правила дорожного движения"
-        selected={panel === DEFAULT_VIEW_PANELS.RULES}
-        className={panel === DEFAULT_VIEW_PANELS.RULES ? 'text-green-700' : ''}
-      >
-        <Icon28BookOutline />
-      </TabbarItem>
-
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.TESTS}`)}
-        text="Тесты"
-        aria-label="Тесты"
-        selected={panel === DEFAULT_VIEW_PANELS.TESTS}
-        className={panel === DEFAULT_VIEW_PANELS.TESTS ? 'text-green-700' : ''}
-      >
-        <Icon28CheckCircleOutline />
-      </TabbarItem>
-
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.PROGRESS}`)}
-        text="Прогресс"
-        aria-label="Мой прогресс"
-        selected={panel === DEFAULT_VIEW_PANELS.PROGRESS}
-        className={panel === DEFAULT_VIEW_PANELS.PROGRESS ? 'text-green-700' : ''}
-      >
-        <Icon28GraphOutline />
-      </TabbarItem>
-
-      <TabbarItem
-        onClick={() => navigator.push(`/${DEFAULT_VIEW_PANELS.PROFILE}`)}
-        text="Профиль"
-        aria-label="Мой профиль"
-        selected={panel === DEFAULT_VIEW_PANELS.PROFILE}
-        className={panel === DEFAULT_VIEW_PANELS.PROFILE ? 'text-green-700' : ''}
-      >
-        <Icon28UserCircleOutline />
-      </TabbarItem>
+        return (
+          <TabbarItem
+            key={id}
+            onClick={() => navigator.push(`/${id}`)}
+            selected={isActive}
+            text={<span style={{ color }}>{text}</span>}
+            aria-label={text}
+          >
+            {React.cloneElement(icon, { color })}
+          </TabbarItem>
+        );
+      })}
     </Tabbar>
   );
 };
