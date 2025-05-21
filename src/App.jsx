@@ -3,11 +3,18 @@ import bridge from '@vkontakte/vk-bridge';
 import { View, SplitLayout, SplitCol, ScreenSpinner } from '@vkontakte/vkui';
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
 
-import { Home, Markup, Rules, Tests } from './panels';
+import { Home, Markup, Rules, Tests, Progress, Profile } from './panels';
 import { DEFAULT_VIEW_PANELS } from './routes';
 
+import AppTabbar from './components/AppTabbar';
+
 export const App = () => {
-  const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
+  // Получаем активные view и panel из маршрутизатора
+  const {
+    view: activeView,
+    panel: activePanel = DEFAULT_VIEW_PANELS.HOME,
+  } = useActiveVkuiLocation();
+
   const isDev = process.env.NODE_ENV === 'development';
 
   const [fetchedUser, setUser] = useState();
@@ -31,13 +38,17 @@ export const App = () => {
   return (
     <SplitLayout popout={popout}>
       <SplitCol>
-        <View activePanel={activePanel}>
+        <View nav={activeView} activePanel={activePanel}>
           <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
           <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
           <Rules id={DEFAULT_VIEW_PANELS.RULES} />
           <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
+          <Progress id={DEFAULT_VIEW_PANELS.PROGRESS} />
+          <Profile id={DEFAULT_VIEW_PANELS.PROFILE} />
         </View>
+        <AppTabbar />
       </SplitCol>
     </SplitLayout>
   );
 };
+
