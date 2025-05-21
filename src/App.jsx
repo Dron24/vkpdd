@@ -8,20 +8,28 @@ import { DEFAULT_VIEW_PANELS } from './routes';
 
 export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.HOME } = useActiveVkuiLocation();
+  const isDev = process.env.NODE_ENV === 'development';
+
   const [fetchedUser, setUser] = useState();
-  const [popout, setPopout] = useState(<ScreenSpinner />);
+  const [popout, setPopout] = useState(isDev ? null : <ScreenSpinner />);
 
   useEffect(() => {
     async function fetchData() {
-      const user = await bridge.send('VKWebAppGetUserInfo');
-      setUser(user);
-      setPopout(null);
+      try {
+        const user = await bridge.send('VKWebAppGetUserInfo');
+        setUser(user);
+      } catch (error) {
+        console.error('Ошибка получения данных VK Bridge:', error);
+      } finally {
+        if (!isDev) setPopout(null);
+      }
     }
+
     fetchData();
   }, []);
 
   return (
-    <SplitLayout>
+    <SplitLayout popout={popout}>
       <SplitCol>
         <View activePanel={activePanel}>
           <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
@@ -31,7 +39,6 @@ export const App = () => {
           <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
         </View>
       </SplitCol>
-      {popout}
     </SplitLayout>
   );
 };
