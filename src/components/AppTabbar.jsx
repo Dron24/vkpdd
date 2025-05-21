@@ -1,3 +1,4 @@
+import React from 'react';
 import { Tabbar, TabbarItem } from '@vkontakte/vkui';
 import {
   Icon28HomeOutline,
@@ -14,43 +15,18 @@ import {
 } from '@vkontakte/vk-mini-apps-router';
 
 import { DEFAULT_VIEW_PANELS } from '../routes';
-import React from 'react';
 
 const AppTabbar = () => {
   const navigator = useRouteNavigator();
-  const { panel } = useActiveVkuiLocation(); // Получаем текущую панель
+  const { panel } = useActiveVkuiLocation(); // Текущая панель
 
   const tabs = [
-    {
-      id: DEFAULT_VIEW_PANELS.HOME,
-      icon: <Icon28HomeOutline />,
-      text: 'Главная',
-    },
-    {
-      id: DEFAULT_VIEW_PANELS.MARKUP,
-      icon: <Icon28ListOutline />,
-      text: 'Разметка',
-    },
-    {
-      id: DEFAULT_VIEW_PANELS.RULES,
-      icon: <Icon28BookOutline />,
-      text: 'ПДД',
-    },
-    {
-      id: DEFAULT_VIEW_PANELS.TESTS,
-      icon: <Icon28CheckCircleOutline />,
-      text: 'Тесты',
-    },
-    {
-      id: DEFAULT_VIEW_PANELS.PROGRESS,
-      icon: <Icon28GraphOutline />,
-      text: 'Прогресс',
-    },
-    {
-      id: DEFAULT_VIEW_PANELS.PROFILE,
-      icon: <Icon28UserCircleOutline />,
-      text: 'Профиль',
-    },
+    { id: DEFAULT_VIEW_PANELS.HOME, icon: <Icon28HomeOutline />, text: 'Главная' },
+    { id: DEFAULT_VIEW_PANELS.MARKUP, icon: <Icon28ListOutline />, text: 'Разметка' },
+    { id: DEFAULT_VIEW_PANELS.RULES, icon: <Icon28BookOutline />, text: 'ПДД' },
+    { id: DEFAULT_VIEW_PANELS.TESTS, icon: <Icon28CheckCircleOutline />, text: 'Тесты' },
+    { id: DEFAULT_VIEW_PANELS.PROGRESS, icon: <Icon28GraphOutline />, text: 'Прогресс' },
+    { id: DEFAULT_VIEW_PANELS.PROFILE, icon: <Icon28UserCircleOutline />, text: 'Профиль' },
   ];
 
   return (
@@ -64,10 +40,25 @@ const AppTabbar = () => {
             key={id}
             onClick={() => navigator.push(`/${id}`)}
             selected={isActive}
-            text={<span style={{ color }}>{text}</span>}
             aria-label={text}
+            text={
+              <span
+                style={{
+                  color,
+                  transition: 'color 0.3s ease',
+                }}
+              >
+                {text}
+              </span>
+            }
           >
-            {React.cloneElement(icon, { color })}
+            {React.cloneElement(icon, {
+              color,
+              style: {
+                transition: 'transform 0.3s ease',
+                transform: isActive ? 'scale(1.3)' : 'scale(1)',
+              },
+            })}
           </TabbarItem>
         );
       })}
