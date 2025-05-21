@@ -3,7 +3,7 @@ import bridge from '@vkontakte/vk-bridge';
 import { View, SplitLayout, SplitCol, ScreenSpinner } from '@vkontakte/vkui';
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
 
-import { Home, Onewayroad, Markup, Rules, Tests } from './panels';
+import { Home, Markup, Rules, Tests } from './panels';
 import { DEFAULT_VIEW_PANELS } from './routes';
 
 export const App = () => {
@@ -33,7 +33,6 @@ export const App = () => {
       <SplitCol>
         <View activePanel={activePanel}>
           <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
-          <Onewayroad id={DEFAULT_VIEW_PANELS.ONEWAYROAD} />
           <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
           <Rules id={DEFAULT_VIEW_PANELS.RULES} />
           <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
