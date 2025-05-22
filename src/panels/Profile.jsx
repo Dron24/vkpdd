@@ -10,11 +10,16 @@ import {
   Text,
   Spacing,
   SimpleCell,
-  Button
+  Button,
+  Snackbar
 } from '@vkontakte/vkui';
+import { Icon28CheckCircleOutline, Icon28CancelOutline } from '@vkontakte/icons';
 
 export const Profile = ({ id }) => {
   const [user, setUser] = useState(null);
+  const [snackbar, setSnackbar] = useState(null);
+  const appLink = `https://vk.com/app${import.meta.env.VITE_VK_APP_ID}`;
+  const isDesktop = window.innerWidth > 768;
 
   useEffect(() => {
     async function fetchUser() {
@@ -25,20 +30,43 @@ export const Profile = ({ id }) => {
         console.error('Не удалось получить данные пользователя:', e);
       }
     }
+
     fetchUser();
   }, []);
 
+  const openSnackbar = (message, success = true) => {
+    setSnackbar(
+      <Snackbar
+        onClose={() => setSnackbar(null)}
+        before={
+          success
+            ? <Icon28CheckCircleOutline fill="var(--vkui--color_icon_positive)" />
+            : <Icon28CancelOutline fill="var(--vkui--color_icon_negative)" />
+        }
+      >
+        {message}
+      </Snackbar>
+    );
+  };
+
   const handleShare = async () => {
-  try {
-    const link = 'https://vk.com/app' + import.meta.env.VITE_VK_APP_ID;
-    console.log('Ссылка для VKWebAppShare:', link);
-    await bridge.send('VKWebAppShare', {
-      link
-    });
-  } catch (e) {
-    console.error('Ошибка при попытке поделиться:', e);
-  }
-};
+    if (isDesktop) {
+      try {
+        await navigator.clipboard.writeText(appLink);
+        openSnackbar('Ссылка скопирована в буфер обмена!');
+      } catch (err) {
+        console.error('Ошибка копирования ссылки:', err);
+        openSnackbar('Не удалось скопировать ссылку.', false);
+      }
+    } else {
+      try {
+        await bridge.send('VKWebAppShare', { link: appLink });
+      } catch (e) {
+        console.warn('Ошибка VKWebAppShare:', e);
+        openSnackbar('Не удалось поделиться ссылкой.', false);
+      }
+    }
+  };
 
   if (!user) {
     return (
@@ -82,6 +110,8 @@ export const Profile = ({ id }) => {
           </Button>
         </Div>
       </Group>
+
+      {snackbar}
     </Panel>
   );
 };
