@@ -29,14 +29,16 @@ export const Profile = ({ id }) => {
   }, []);
 
   const handleShare = async () => {
-    try {
-      await bridge.send('VKWebAppShare', {
-        link: 'https://vk.com/app' + import.meta.env.VITE_VK_APP_ID // замени на ID своего мини-приложения
-      });
-    } catch (e) {
-      console.error('Ошибка при попытке поделиться:', e);
-    }
-  };
+  try {
+    const link = 'https://vk.com/app' + import.meta.env.VITE_VK_APP_ID;
+    console.log('Ссылка для VKWebAppShare:', link);
+    await bridge.send('VKWebAppShare', {
+      link
+    });
+  } catch (e) {
+    console.error('Ошибка при попытке поделиться:', e);
+  }
+};
 
   if (!user) {
     return (
