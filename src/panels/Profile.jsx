@@ -10,6 +10,7 @@ import {
   Text,
   Spacing,
   SimpleCell,
+  Button
 } from '@vkontakte/vkui';
 
 export const Profile = ({ id }) => {
@@ -26,6 +27,16 @@ export const Profile = ({ id }) => {
     }
     fetchUser();
   }, []);
+
+  const handleShare = async () => {
+    try {
+      await bridge.send('VKWebAppShare', {
+        link: 'https://vk.com/app' + import.meta.env.VITE_VK_APP_ID // замени на ID своего мини-приложения
+      });
+    } catch (e) {
+      console.error('Ошибка при попытке поделиться:', e);
+    }
+  };
 
   if (!user) {
     return (
@@ -60,6 +71,14 @@ export const Profile = ({ id }) => {
         <SimpleCell disabled>Дата рождения: {bdate}</SimpleCell>
         <SimpleCell disabled>ID пользователя: {userId}</SimpleCell>
         <SimpleCell disabled>Город: {city}</SimpleCell>
+      </Group>
+
+      <Group>
+        <Div>
+          <Button size="l" stretched mode="primary" onClick={handleShare}>
+            Поделиться приложением
+          </Button>
+        </Div>
       </Group>
     </Panel>
   );
