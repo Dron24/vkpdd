@@ -11,15 +11,21 @@ import {
   Spacing,
   SimpleCell,
   Button,
-  Snackbar
+  ModalCard,
+  usePlatform,
+  useAdaptivityConditionalRender,
+  ModalRoot,
+  ModalPage,
+  ModalPageHeader
 } from '@vkontakte/vkui';
-import { Icon28CheckCircleOutline, Icon28CancelOutline } from '@vkontakte/icons';
+import { Icon28ShareOutline, Icon28CheckCircleOutline, Icon28CancelOutline } from '@vkontakte/icons';
 
 export const Profile = ({ id }) => {
   const [user, setUser] = useState(null);
-  const [snackbar, setSnackbar] = useState(null);
+  const [activeModal, setActiveModal] = useState(null);
+  const platform = usePlatform();
+
   const appLink = `https://vk.com/app${import.meta.env.VITE_VK_APP_ID}`;
-  const isDesktop = window.innerWidth > 768;
 
   useEffect(() => {
     async function fetchUser() {
@@ -30,43 +36,58 @@ export const Profile = ({ id }) => {
         console.error('Не удалось получить данные пользователя:', e);
       }
     }
-
     fetchUser();
   }, []);
 
-  const openSnackbar = (message, success = true) => {
-    setSnackbar(
-      <Snackbar
-        onClose={() => setSnackbar(null)}
-        before={
-          success
-            ? <Icon28CheckCircleOutline fill="var(--vkui--color_icon_positive)" />
-            : <Icon28CancelOutline fill="var(--vkui--color_icon_negative)" />
-        }
-      >
-        {message}
-      </Snackbar>
-    );
-  };
-
   const handleShare = async () => {
+    const isDesktop = platform === 'desktop';
+
     if (isDesktop) {
-      try {
-        await navigator.clipboard.writeText(appLink);
-        openSnackbar('Ссылка скопирована в буфер обмена!');
-      } catch (err) {
-        console.error('Ошибка копирования ссылки:', err);
-        openSnackbar('Не удалось скопировать ссылку.', false);
-      }
+      // Показать модалку с ручным копированием
+      setActiveModal('shareLink');
     } else {
+      // На мобильных работает нативный share
       try {
-        await bridge.send('VKWebAppShare', { link: appLink });
+        await bridge.send('VKWebAppShare', {
+          link: appLink
+        });
       } catch (e) {
-        console.warn('Ошибка VKWebAppShare:', e);
-        openSnackbar('Не удалось поделиться ссылкой.', false);
+        console.error('Ошибка при попытке поделиться:', e);
       }
     }
   };
+
+  const modal = (
+    <ModalRoot activeModal={activeModal} onClose={() => setActiveModal(null)}>
+      <ModalCard
+        id="shareLink"
+        onClose={() => setActiveModal(null)}
+        icon={<Icon28ShareOutline />}
+        header="Поделиться приложением"
+        subheader="Скопируйте и отправьте ссылку вручную:"
+        actions={[
+          {
+            title: 'Закрыть',
+            mode: 'cancel',
+            action: () => setActiveModal(null),
+          },
+        ]}
+      >
+        <Div
+          style={{
+            background: '#f5f5f5',
+            padding: 10,
+            borderRadius: 8,
+            wordBreak: 'break-all',
+            textAlign: 'center',
+            userSelect: 'all',
+          }}
+        >
+          {appLink}
+        </Div>
+      </ModalCard>
+    </ModalRoot>
+  );
 
   if (!user) {
     return (
@@ -84,7 +105,7 @@ export const Profile = ({ id }) => {
   const userId = user.id;
 
   return (
-    <Panel id={id}>
+    <Panel id={id} modal={modal}>
       <PanelHeader>Профиль</PanelHeader>
 
       <Group>
@@ -110,8 +131,6 @@ export const Profile = ({ id }) => {
           </Button>
         </Div>
       </Group>
-
-      {snackbar}
     </Panel>
   );
 };
