@@ -3,7 +3,7 @@ import bridge from '@vkontakte/vk-bridge';
 import { View, SplitLayout, SplitCol, ScreenSpinner } from '@vkontakte/vkui';
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
 
-import { Home, Markup, Rules, Tests, Progress, Profile } from './panels';
+import { Tickets_pdd, Textbook, Tests, Progress, Profile } from './panels';
 import { DEFAULT_VIEW_PANELS } from './routes';
 
 import AppTabbar from './components/AppTabbar';
@@ -39,15 +39,12 @@ export const App = () => {
     <SplitLayout popout={popout}>
       <SplitCol>
         <View nav={activeView} activePanel={activePanel}>
-          {/* 🔧 добавляем id, чтобы удовлетворить требования View */}
           <RedirectToHome id={DEFAULT_VIEW_PANELS.ROOT} />
-
-          <Home id={DEFAULT_VIEW_PANELS.HOME} fetchedUser={fetchedUser} />
-          <Markup id={DEFAULT_VIEW_PANELS.MARKUP} />
-          <Rules id={DEFAULT_VIEW_PANELS.RULES} />
+          <Profile id={DEFAULT_VIEW_PANELS.PROFILE} fetchedUser={fetchedUser} />
+          <Tickets_pdd id={DEFAULT_VIEW_PANELS.TICKETS_PDD} />
+          <Textbook id={DEFAULT_VIEW_PANELS.TEXTBOOK} />
           <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
           <Progress id={DEFAULT_VIEW_PANELS.PROGRESS} />
-          <Profile id={DEFAULT_VIEW_PANELS.PROFILE} />
         </View>
         <AppTabbar />
       </SplitCol>

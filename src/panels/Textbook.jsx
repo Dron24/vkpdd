@@ -1,13 +1,13 @@
 import { Panel, PanelHeader, PanelHeaderBack, Group, Header, Div } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
-export const Rules = ({ id }) => {
+export const Textbook = ({ id }) => {
   const navigator = useRouteNavigator();
 
   return (
     <Panel id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
-        Правила
+        Учебник ПДД
       </PanelHeader>
       <Group header={<Header mode="primary">Общие правила дорожного движения</Header>}>
         <Div>

@@ -5,7 +5,7 @@ const RedirectToHome = ({ id }) => {
   const navigator = useRouteNavigator();
 
   useEffect(() => {
-    navigator.replace('/home');
+    navigator.replace('/profile');
   }, [navigator]);
 
   // Возвращаем пустой div, но с обязательным id

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Tabbar, TabbarItem } from '@vkontakte/vkui';
 import {
-  Icon28HomeOutline,
-  Icon28ListOutline,
-  Icon28BookOutline,
-  Icon28CheckCircleOutline,
-  Icon28GraphOutline,
-  Icon28UserCircleOutline,
+  Icon28BookOutline,         // Учебник
+  Icon28TicketOutline,         // Билеты
+  Icon28CheckCircleOutline,  // Экзамен
+  Icon28GraphOutline,        // Статистика
+  Icon28UserCircleOutline    // Профиль
+  
 } from '@vkontakte/icons';
 
 import {
@@ -18,15 +18,14 @@ import { DEFAULT_VIEW_PANELS } from '../routes';
 
 const AppTabbar = () => {
   const navigator = useRouteNavigator();
-  const { panel } = useActiveVkuiLocation(); // Текущая панель
+  const { panel } = useActiveVkuiLocation();
 
   const tabs = [
-    { id: DEFAULT_VIEW_PANELS.HOME, icon: <Icon28HomeOutline />, text: 'Главная' },
-    { id: DEFAULT_VIEW_PANELS.MARKUP, icon: <Icon28ListOutline />, text: 'Разметка' },
-    { id: DEFAULT_VIEW_PANELS.RULES, icon: <Icon28BookOutline />, text: 'ПДД' },
-    { id: DEFAULT_VIEW_PANELS.TESTS, icon: <Icon28CheckCircleOutline />, text: 'Тесты' },
-    { id: DEFAULT_VIEW_PANELS.PROGRESS, icon: <Icon28GraphOutline />, text: 'Прогресс' },
     { id: DEFAULT_VIEW_PANELS.PROFILE, icon: <Icon28UserCircleOutline />, text: 'Профиль' },
+    { id: DEFAULT_VIEW_PANELS.PROGRESS, icon: <Icon28GraphOutline />, text: 'Статистика' },
+    { id: DEFAULT_VIEW_PANELS.TEXTBOOK, icon: <Icon28BookOutline />, text: 'Учебник' },
+    { id: DEFAULT_VIEW_PANELS.TICKETS_PDD, icon: <Icon28TicketOutline />, text: 'Билеты' },
+    { id: DEFAULT_VIEW_PANELS.TESTS, icon: <Icon28CheckCircleOutline />, text: 'Экзамен' },
   ];
 
   return (
@@ -38,7 +37,9 @@ const AppTabbar = () => {
         return (
           <TabbarItem
             key={id}
-            onClick={() => navigator.push(`/${id}`)}
+            onClick={() => {
+              if (!isActive) navigator.push(`/${id}`);
+            }}
             selected={isActive}
             aria-label={text}
             text={

@@ -1,7 +1,7 @@
 import { Panel, PanelHeader, PanelHeaderBack, Group, Header, Div } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
-export const Markup = ({ id }) => {
+export const Tickets_pdd = ({ id }) => {
   const navigator = useRouteNavigator();
 
   return (
