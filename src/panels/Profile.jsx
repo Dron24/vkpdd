@@ -5,13 +5,11 @@ import {
   PanelHeader,
   Group,
   Header,
-  Cell,
-  Avatar,
   Div,
-  Button,
-  CardGrid,
-  Card,
+  Avatar,
   Text,
+  Spacing,
+  SimpleCell,
 } from '@vkontakte/vkui';
 
 export const Profile = ({ id }) => {
@@ -39,51 +37,30 @@ export const Profile = ({ id }) => {
   }
 
   const fullName = `${user.first_name} ${user.last_name}`;
-  const city = user.city?.title || 'Город не указан';
+  const city = user.city?.title || 'Не указано';
+  const bdate = user.bdate || 'Не указано';
+  const sex = user.sex === 1 ? 'Женский' : user.sex === 2 ? 'Мужской' : 'Не указан';
+  const userId = user.id;
 
   return (
     <Panel id={id}>
-      <PanelHeader>Привет, {user.first_name}</PanelHeader>
+      <PanelHeader>Профиль</PanelHeader>
 
       <Group>
-        <Cell before={<Avatar size={96} src={user.photo_200} />}>
-          <Text weight="semibold" style={{ fontSize: 20 }}>
-            {fullName}
-          </Text>
-          <Text weight="regular" style={{ marginTop: 4 }}>
-            {city}
-          </Text>
-        </Cell>
+        <Div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Avatar size={96} src={user.photo_200} />
+          <Spacing size={12} />
+          <Text weight="2" style={{ fontSize: 20 }}>{fullName}</Text>
+          <Text style={{ color: 'var(--vkui--color_text_secondary)' }}>{city}</Text>
+        </Div>
       </Group>
 
-      <Group header={<Header mode="secondary">Статистика</Header>}>
-        <CardGrid size="l" style={{ padding: 12 }}>
-          <Card
-            mode="shadow"
-            style={{ padding: 12, textAlign: 'center' }}
-          >
-            <Text weight="semibold" style={{ fontSize: 18 }}>
-              123
-            </Text>
-            <Text>Друзья</Text>
-          </Card>
-          <Card
-            mode="shadow"
-            style={{ padding: 12, textAlign: 'center' }}
-          >
-            <Text weight="semibold" style={{ fontSize: 18 }}>
-              456
-            </Text>
-            <Text>Сообщения</Text>
-          </Card>
-        </CardGrid>
+      <Group header={<Header mode="secondary">Информация о пользователе</Header>}>
+        <SimpleCell disabled>Пол: {sex}</SimpleCell>
+        <SimpleCell disabled>Дата рождения: {bdate}</SimpleCell>
+        <SimpleCell disabled>ID пользователя: {userId}</SimpleCell>
+        <SimpleCell disabled>Город: {city}</SimpleCell>
       </Group>
-
-      <Div>
-        <Button size="l" mode="secondary" onClick={() => bridge.send('VKWebAppClose')}>
-          Выйти
-        </Button>
-      </Div>
     </Panel>
   );
 };
