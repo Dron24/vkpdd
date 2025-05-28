@@ -1,14 +1,12 @@
 import React from 'react';
 import { Tabbar, TabbarItem } from '@vkontakte/vkui';
 import {
-  Icon28BookOutline,         // Учебник
-  Icon28TicketOutline,         // Билеты
-  Icon28CheckCircleOutline,  // Экзамен
-  Icon28GraphOutline,        // Статистика
-  Icon28UserCircleOutline    // Профиль
-  
+  Icon28BookOutline,
+  Icon28TicketOutline,
+  Icon28CheckCircleOutline,
+  Icon28GraphOutline,
+  Icon28UserCircleOutline
 } from '@vkontakte/icons';
-
 import {
   useRouteNavigator,
   useActiveVkuiLocation,
@@ -32,7 +30,7 @@ const AppTabbar = () => {
     <Tabbar>
       {tabs.map(({ id, icon, text }) => {
         const isActive = panel === id;
-        const color = isActive ? '#00FF00' : '#FFA500';
+        const color = isActive ? '#00FF00' : 'var(--vkui--color_icon_secondary)';
 
         return (
           <TabbarItem

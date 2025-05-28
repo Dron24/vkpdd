@@ -134,7 +134,7 @@ export const Profile = ({ id }) => {
           <Avatar size={96} src={user.photo_200} />
           <Spacing size={12} />
           <Text weight="2" style={{ fontSize: 20 }}>{fullName}</Text>
-          <Text style={{ color: 'var(--vkui--color_text_secondary)' }}>{city}</Text>
+          <Text>{city}</Text>
         </Div>
       </Group>
 
