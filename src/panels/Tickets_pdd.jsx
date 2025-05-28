@@ -6,8 +6,8 @@ export const Tickets_pdd = ({ id }) => {
 
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Разметка</PanelHeader>
-      <Group header={<Header mode="primary">Дорожная разметка</Header>}>
+      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Билеты</PanelHeader>
+      <Group header={<Header mode="primary">Билеты</Header>}>
         <Div>
           Здесь будет информация о видах дорожной разметки, их значении и применении.
           <br />

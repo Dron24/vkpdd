@@ -12,19 +12,15 @@ import {
   SimpleCell,
   Button,
   ModalCard,
-  usePlatform,
-  useAdaptivityConditionalRender,
   ModalRoot,
-  ModalPage,
-  ModalPageHeader
+  Snackbar
 } from '@vkontakte/vkui';
-import { Icon28ShareOutline, Icon28CheckCircleOutline, Icon28CancelOutline } from '@vkontakte/icons';
+import { Icon28ShareOutline, Icon28CheckCircleOutline, Icon28CopyOutline } from '@vkontakte/icons';
 
 export const Profile = ({ id }) => {
   const [user, setUser] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
-  const platform = usePlatform();
-
+  const [snackbar, setSnackbar] = useState(null);
   const appLink = `https://vk.com/app${import.meta.env.VITE_VK_APP_ID}`;
 
   useEffect(() => {
@@ -39,14 +35,30 @@ export const Profile = ({ id }) => {
     fetchUser();
   }, []);
 
-  const handleShare = async () => {
-    const isDesktop = platform === 'desktop';
+  const showCopied = () => {
+    setSnackbar(
+      <Snackbar
+        layout="vertical"
+        onClose={() => setSnackbar(null)}
+        before={<Icon28CheckCircleOutline fill="var(--vkui--color_icon_positive)" />}
+      >
+        Ссылка скопирована
+      </Snackbar>
+    );
+  };
 
-    if (isDesktop) {
-      // Показать модалку с ручным копированием
-      setActiveModal('shareLink');
-    } else {
-      // На мобильных работает нативный share
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(appLink);
+      showCopied();
+    } catch (err) {
+      console.error('Ошибка копирования ссылки:', err);
+    }
+  };
+
+  const handleShare = async () => {
+    const isMobile = /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+    if (isMobile) {
       try {
         await bridge.send('VKWebAppShare', {
           link: appLink
@@ -54,6 +66,8 @@ export const Profile = ({ id }) => {
       } catch (e) {
         console.error('Ошибка при попытке поделиться:', e);
       }
+    } else {
+      setActiveModal('shareLink');
     }
   };
 
@@ -64,8 +78,14 @@ export const Profile = ({ id }) => {
         onClose={() => setActiveModal(null)}
         icon={<Icon28ShareOutline />}
         header="Поделиться приложением"
-        subheader="Скопируйте и отправьте ссылку вручную:"
+        subheader="Скопируйте ссылку вручную или нажмите кнопку:"
         actions={[
+          {
+            title: 'Скопировать ссылку',
+            mode: 'primary',
+            action: handleCopy,
+            icon: <Icon28CopyOutline />,
+          },
           {
             title: 'Закрыть',
             mode: 'cancel',
@@ -81,6 +101,7 @@ export const Profile = ({ id }) => {
             wordBreak: 'break-all',
             textAlign: 'center',
             userSelect: 'all',
+            marginBottom: 10,
           }}
         >
           {appLink}
@@ -131,6 +152,8 @@ export const Profile = ({ id }) => {
           </Button>
         </Div>
       </Group>
+
+      {snackbar}
     </Panel>
   );
 };
