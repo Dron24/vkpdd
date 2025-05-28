@@ -5,7 +5,7 @@ import {
   Icon28TicketOutline,
   Icon28CheckCircleOutline,
   Icon28GraphOutline,
-  Icon28UserCircleOutline
+  Icon28UserCircleOutline,
 } from '@vkontakte/icons';
 import {
   useRouteNavigator,

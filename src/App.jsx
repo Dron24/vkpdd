@@ -37,7 +37,14 @@ export const App = () => {
 
   return (
     <SplitLayout popout={popout}>
-      <SplitCol>
+      <SplitCol
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+          paddingBottom: 56, // высота Tabbar (на всякий случай)
+        }}
+      >
         <View nav={activeView} activePanel={activePanel}>
           <RedirectToHome id={DEFAULT_VIEW_PANELS.ROOT} />
           <Profile id={DEFAULT_VIEW_PANELS.PROFILE} fetchedUser={fetchedUser} />
