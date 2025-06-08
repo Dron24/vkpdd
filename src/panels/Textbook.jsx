@@ -13,20 +13,11 @@ export const Textbook = ({ id }) => {
   const navigator = useRouteNavigator();
 
   const sections = [
-    { id: 'section-1', title: 'Общие положения' },
-    { id: 'section-2', title: 'Обязанности участников движения' },
-    { id: 'section-3', title: 'Дорожные знаки и разметка' },
-    { id: 'section-4', title: 'Светофоры и регулировка' },
-    { id: 'section-5', title: 'Маневрирование и начало движения' },
-    { id: 'section-6', title: 'Расположение на дороге' },
-    { id: 'section-7', title: 'Скоростной режим' },
-    { id: 'section-8', title: 'Проезд перекрёстков' },
-    { id: 'section-9', title: 'Пешеходы и остановки' },
-    { id: 'section-10', title: 'Сигналы и обозначения' },
-    { id: 'section-11', title: 'Движение в сложных условиях' },
-    { id: 'section-12', title: 'Спецсигналы и преимущества' },
-    { id: 'section-13', title: 'Железнодорожные переезды' },
-    { id: 'section-14', title: 'Административная ответственность' },
+    { id: 'rules', title: 'Правила дорожного движения' },
+    { id: 'signs', title: 'Дорожные знаки' },
+    { id: 'marking', title: 'Дорожная разметка' },
+    { id: 'malfunctions', title: 'Перечень неисправностей' },
+    { id: 'admission', title: 'Основные положения по допуску' },
   ];
 
   return (
@@ -48,4 +39,3 @@ export const Textbook = ({ id }) => {
     </Panel>
   );
 };
-

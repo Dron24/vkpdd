@@ -11,7 +11,19 @@ import {
 } from '@vkontakte/vkui';
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
 
-import { Tickets_pdd, Textbook, Tests, Progress, Profile } from './panels';
+import { 
+  Tickets_pdd, 
+  Textbook, 
+  TextbookRules, 
+  TextbookSigns, 
+  TextbookMarking, 
+  TextbookMalfunctions, 
+  TextbookAdmission, 
+  Tests, 
+  Progress, 
+  Profile 
+} from './panels';
+
 import { DEFAULT_VIEW_PANELS } from './routes';
 
 import AppTabbar from './components/AppTabbar';
@@ -62,7 +74,14 @@ export const App = () => {
               <RedirectToHome id={DEFAULT_VIEW_PANELS.ROOT} />
               <Profile id={DEFAULT_VIEW_PANELS.PROFILE} fetchedUser={fetchedUser} />
               <Tickets_pdd id={DEFAULT_VIEW_PANELS.TICKETS_PDD} />
+
               <Textbook id={DEFAULT_VIEW_PANELS.TEXTBOOK} />
+              <TextbookRules id={DEFAULT_VIEW_PANELS.TEXTBOOK_RULES} />
+              <TextbookSigns id={DEFAULT_VIEW_PANELS.TEXTBOOK_SIGNS} />
+              <TextbookMarking id={DEFAULT_VIEW_PANELS.TEXTBOOK_MARKING} />
+              <TextbookMalfunctions id={DEFAULT_VIEW_PANELS.TEXTBOOK_MALFUNCTIONS} />
+              <TextbookAdmission id={DEFAULT_VIEW_PANELS.TEXTBOOK_ADMISSION} />
+
               <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
               <Progress id={DEFAULT_VIEW_PANELS.PROGRESS} />
             </View>
