@@ -13,11 +13,7 @@ export const DEFAULT_VIEW_PANELS = {
   ROOT: 'root',
   TICKETS_PDD: 'tickets_pdd',
   TEXTBOOK: 'textbook',
-  TEXTBOOK_RULES: 'textbook_rules',
-  TEXTBOOK_SIGNS: 'textbook_signs',
-  TEXTBOOK_MARKING: 'textbook_marking',
-  TEXTBOOK_MALFUNCTIONS: 'textbook_malfunctions',
-  TEXTBOOK_ADMISSION: 'textbook_admission',
+  TEXTBOOK_VIEWER: 'textbook_viewer', // 👈 универсальный компонент
   TESTS: 'tests',
   PROGRESS: 'progress',
   PROFILE: 'profile',
@@ -26,19 +22,18 @@ export const DEFAULT_VIEW_PANELS = {
 export const routes = RoutesConfig.create([
   createRoot(DEFAULT_ROOT, [
     createView(DEFAULT_VIEW, [
-      createPanel(DEFAULT_VIEW_PANELS.ROOT, `/`, []), // 👈 перенаправление с корня
+      createPanel(DEFAULT_VIEW_PANELS.ROOT, `/`, []),
       createPanel(DEFAULT_VIEW_PANELS.TICKETS_PDD, `/tickets_pdd`, []),
       createPanel(DEFAULT_VIEW_PANELS.TESTS, `/tests`, []),
       createPanel(DEFAULT_VIEW_PANELS.PROGRESS, `/progress`, []),
       createPanel(DEFAULT_VIEW_PANELS.PROFILE, `/profile`, []),
       createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK, `/textbook`, []),
-      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_RULES, `/textbook/rules`, []),
-      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_SIGNS, `/textbook/signs`, []),
-      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_MARKING, `/textbook/marking`, []),
-      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_MALFUNCTIONS, `/textbook/malfunctions`, []),
-      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_ADMISSION, `/textbook/admission`, []),
+
+      // ✅ Один универсальный маршрут вместо отдельных
+      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_VIEWER, `/textbook/:section`, []),
     ]),
   ]),
 ]);
 
 export const router = createHashRouter(routes.getRoutes());
+

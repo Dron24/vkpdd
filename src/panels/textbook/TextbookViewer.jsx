@@ -1,6 +1,6 @@
 import { Panel, PanelHeader, PanelHeaderBack, Group, Div, SimpleCell } from "@vkontakte/vkui";
 import { useRouteNavigator, useParams } from "@vkontakte/vk-mini-apps-router";
-import textbookData from "@/assets/textbookData.json";
+import textbookData from "../../assets/textbookData.json";
 
 export const TextbookViewer = ({ id }) => {
   const navigator = useRouteNavigator();
