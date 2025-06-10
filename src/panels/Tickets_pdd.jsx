@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Panel,
   PanelHeader,
@@ -7,12 +8,12 @@ import {
   SimpleCell,
 } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
-import { Icon28ListOutline } from '@vkontakte/icons';
+import { MdListAlt } from 'react-icons/md';
 
 export const Tickets_pdd = ({ id }) => {
   const navigator = useRouteNavigator();
 
-  // Список билетов: можно от 1 до 40 (как в официальных экзаменах)
+  // 40 билетов, как в официальных экзаменах
   const tickets = Array.from({ length: 40 }, (_, i) => ({
     id: `ticket-${i + 1}`,
     title: `Билет №${i + 1}`,
@@ -27,7 +28,7 @@ export const Tickets_pdd = ({ id }) => {
         {tickets.map((ticket) => (
           <SimpleCell
             key={ticket.id}
-            before={<Icon28ListOutline />}
+            before={<MdListAlt size={28} />}
             onClick={() => navigator.push(`/ticket/${ticket.id}`)}
           >
             {ticket.title}
@@ -37,4 +38,3 @@ export const Tickets_pdd = ({ id }) => {
     </Panel>
   );
 };
-

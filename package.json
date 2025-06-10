@@ -12,7 +12,7 @@
     "deploy": "vite build && vk-miniapps-deploy"
   },
   "dependencies": {
-    "@vkontakte/icons": "^3.7.0",
+    "@vkontakte/icons": "^3.9.1",
     "@vkontakte/vk-bridge": "^2.13.0",
     "@vkontakte/vk-bridge-react": "^1.0.1",
     "@vkontakte/vk-mini-apps-router": "^1.7.6",
@@ -21,11 +21,11 @@
     "cheerio": "^1.0.0",
     "debug": "^4.4.1",
     "iconv-lite": "^0.6.3",
-    "playwright": "^1.52.0",
     "prop-types": "^15.8.1",
     "puppeteer": "^24.10.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^5.3.1",

@@ -1,23 +1,26 @@
+import React from 'react';
 import {
   Panel,
   PanelHeader,
-  Group,
-  SimpleCell,
-  Header,
   PanelHeaderBack,
+  Group,
+  Header,
+  SimpleCell,
 } from '@vkontakte/vkui';
-import { Icon28BookOutline } from '@vkontakte/icons';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
+
+import { BsSignStop, BsJournalBookmark, BsCapslock, BsWrenchAdjustableCircle, BsShieldLock } from "react-icons/bs";
+
 
 export const Textbook = ({ id }) => {
   const navigator = useRouteNavigator();
 
   const sections = [
-    { id: 'rules', title: 'Правила дорожного движения' },
-    { id: 'signs', title: 'Дорожные знаки' },
-    { id: 'marking', title: 'Дорожная разметка' },
-    { id: 'malfunctions', title: 'Перечень неисправностей' },
-    { id: 'admission', title: 'Основные положения по допуску' },
+    { id: 'rules', title: 'Правила дорожного движения', icon: <BsJournalBookmark size={26} /> },
+    { id: 'signs', title: 'Дорожные знаки', icon: <BsSignStop size={26} /> },
+    { id: 'marking', title: 'Дорожная разметка', icon: <BsCapslock size={26} /> },
+    { id: 'malfunctions', title: 'Перечень неисправностей', icon: <BsWrenchAdjustableCircle size={26} /> },
+    { id: 'admission', title: 'Основные положения по допуску', icon: <BsShieldLock size={26} /> },
   ];
 
   return (
@@ -29,7 +32,7 @@ export const Textbook = ({ id }) => {
         {sections.map((section) => (
           <SimpleCell
             key={section.id}
-            before={<Icon28BookOutline />}
+            before={section.icon}
             onClick={() => navigator.push(`/textbook/${section.id}`)}
           >
             {section.title}
