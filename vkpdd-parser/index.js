@@ -1,82 +1,100 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import fs from 'fs';
+import puppeteer from 'puppeteer';
+import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import iconv from 'iconv-lite';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const pages = [
-  { url: 'https://www.drom.ru/pdd/pdd/', filename: 'TextbookRules.jsx', title: 'Правила дорожного движения' },
-  { url: 'https://www.drom.ru/pdd/pdd/signs/', filename: 'TextbookSigns.jsx', title: 'Дорожные знаки' },
-  { url: 'https://www.drom.ru/pdd/pdd/marking/', filename: 'TextbookMarking.jsx', title: 'Дорожная разметка' },
-  { url: 'https://www.drom.ru/pdd/pdd/fault_list/', filename: 'TextbookMalfunctions.jsx', title: 'Перечень неисправностей' },
-  { url: 'https://www.drom.ru/pdd/pdd/permission/', filename: 'TextbookAdmission.jsx', title: 'Допуск к эксплуатации' },
+  {
+    id: 'rules',
+    url: 'https://www.drom.ru/pdd/pdd/',
+    title: 'Правила дорожного движения',
+  },
+  {
+    id: 'signs',
+    url: 'https://www.drom.ru/pdd/pdd/signs/',
+    title: 'Дорожные знаки',
+  },
+  {
+    id: 'marking',
+    url: 'https://www.drom.ru/pdd/pdd/marking/',
+    title: 'Дорожная разметка',
+  },
+  {
+    id: 'malfunctions',
+    url: 'https://www.drom.ru/pdd/pdd/fault_list/',
+    title: 'Перечень неисправностей',
+  },
+  {
+    id: 'admission',
+    url: 'https://www.drom.ru/pdd/pdd/permission/',
+    title: 'Допуск к эксплуатации',
+  },
 ];
 
-const outputDir = path.resolve(__dirname, '../src/panels/textbook');
+const parsePage = async (page, browser) => {
+  const pageObj = await browser.newPage();
 
-async function parsePage({ url, filename, title }) {
-  console.log(`📥 Загружается: ${url}`);
-
-  const response = await axios.get(url, {
-    responseType: 'arraybuffer', // получаем сырые байты
-  });
-
-  const decoded = iconv.decode(response.data, 'win1251'); // декодируем как win1251
-  const $ = cheerio.load(decoded);
-  const blocks = $('.b-media-cont_margin_b-size-m');
-
-  if (blocks.length === 0) {
-    console.error(`❌ Контент не найден: ${url}`);
-    return;
-  }
-
-  let content = '';
-  blocks.each((_, el) => {
-    content += $(el).html();
-  });
-
-  const cleaned = content
-    .replace(/\s+/g, ' ')
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
-    .replace(/`/g, '\\`')
-    .trim();
-
-  const componentName = filename.replace('.jsx', '');
-
-  const jsx = `
-import { Panel, PanelHeader, PanelHeaderBack, Group, Div } from '@vkontakte/vkui';
-import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
-
-export const ${componentName} = ({ id }) => {
-  const navigator = useRouteNavigator();
-  return (
-    <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>${title}</PanelHeader>
-      <Group>
-        <Div>
-          <div dangerouslySetInnerHTML={{ __html: \`${cleaned}\` }} />
-        </Div>
-      </Group>
-    </Panel>
+  // Настраиваем как обычный браузер
+  await pageObj.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
   );
-};
-  `.trim();
+  await pageObj.setViewport({ width: 1280, height: 800 });
 
-  fs.writeFileSync(path.join(outputDir, filename), jsx, 'utf-8');
-  console.log(`✅ Создан компонент: ${filename}`);
-}
+  console.log(`📥 Загружаем: ${page.url}`);
 
-(async () => {
-  for (const page of pages) {
-    try {
-      await parsePage(page);
-    } catch (e) {
-      console.error(`❌ Ошибка: ${page.url}`, e.message);
-    }
+  try {
+    await pageObj.goto(page.url, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+    });
+
+    const content = await pageObj.evaluate(() => {
+      const containers = document.querySelectorAll('.b-media-cont_margin_b-size-m');
+      for (const container of containers) {
+        if (container.querySelector('.pub')) {
+          return container.innerHTML.trim();
+        }
+      }
+      return '';
+    });
+
+    await pageObj.close();
+
+    return {
+      title: page.title,
+      content,
+    };
+  } catch (err) {
+    console.error(`❌ Ошибка при парсинге ${page.url}:`, err.message);
+    await pageObj.close();
+    return {
+      title: page.title,
+      content: '',
+    };
   }
-})();
+};
+
+const run = async () => {
+  const browser = await puppeteer.launch({
+    headless: false, // включи true, если не нужно видеть браузер
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    ignoreHTTPSErrors: true,
+  });
+
+  const result = {};
+
+  for (const page of pages) {
+    const parsed = await parsePage(page, browser);
+    result[page.id] = {
+      title: parsed.title,
+      content: parsed.content,
+    };
+  }
+
+  await browser.close();
+
+  const outputPath = path.resolve('src/assets/textbookData.json');
+  await fs.writeFile(outputPath, JSON.stringify(result, null, 2), 'utf-8');
+  console.log('✅ Данные сохранены в', outputPath);
+};
+
+run();
