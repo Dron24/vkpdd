@@ -127,7 +127,7 @@ export const Profile = ({ id }) => {
       <Group>
         <Div>
           <Button size="l" stretched mode="primary" onClick={handleShare}>
-            Поделиться приложением
+            Поделиться с другом
           </Button>
         </Div>
       </Group>
