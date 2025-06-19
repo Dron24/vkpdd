@@ -36,7 +36,12 @@ const AppTabbar = () => {
           <TabbarItem
             key={id}
             onClick={() => {
-              if (!isActive) navigator.push(`/${id}`);
+              if (!isActive) {
+                navigator.push(`/${id}`);
+              } else {
+                // Если уже активен — вернуться на начальную панель вкладки
+                navigator.replace(`/${id}`);
+              }
             }}
             selected={isActive}
             aria-label={text}

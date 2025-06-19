@@ -9,7 +9,13 @@ import {
 } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 
-import { BsSignStop, BsJournalBookmark, BsCapslock, BsWrenchAdjustableCircle, BsShieldLock } from "react-icons/bs";
+import {
+  BsSignStop,
+  BsJournalBookmark,
+  BsCapslock,
+  BsWrenchAdjustableCircle,
+  BsShieldLock,
+} from "react-icons/bs";
 
 export const Textbook = ({ id }) => {
   const navigator = useRouteNavigator();
@@ -30,14 +36,13 @@ export const Textbook = ({ id }) => {
       <Group header={<Header mode="primary">Разделы</Header>}>
         {sections.map((section) => (
           <SimpleCell
-  key={section.id}
-  before={section.icon}
-  onClick={() => navigator.push(`/textbook/${section.id}`)}
-  expandable={true}
->
-  {section.title}
-</SimpleCell>
-
+            key={section.id}
+            before={section.icon}
+            onClick={() => navigator.push(`/textbook/${section.id}`)}
+            expandable="true" // исправлено здесь
+          >
+            {section.title}
+          </SimpleCell>
         ))}
       </Group>
     </Panel>
