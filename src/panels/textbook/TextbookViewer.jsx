@@ -93,7 +93,7 @@ export const TextbookViewer = ({ id }) => {
   return (
     <Panel id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>{data.title}</PanelHeader>
-      <Group header={<Header mode="primary">Подразделы</Header>}>
+      <Group header={<Header mode="primary">Разделы</Header>}>
         {data.subsections.map((sub, idx) => (
           <SimpleCell
             key={idx}
