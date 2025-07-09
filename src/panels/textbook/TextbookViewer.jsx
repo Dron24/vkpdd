@@ -29,6 +29,41 @@ export const TextbookViewer = ({ id }) => {
     );
   }
 
+  const renderParagraph = (content, key) => (
+    <Text key={key} style={{ marginBottom: 8, lineHeight: 1.5 }}>
+      {content.map((part, index) => {
+        if (part.type === "text") {
+          return <span key={index}>{part.content}</span>;
+        }
+        if (part.type === "bold") {
+          return (
+            <strong key={index} style={{ fontWeight: 600 }}>
+              {part.content}
+            </strong>
+          );
+        }
+        if (part.type === "highlight") {
+          return (
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#3cb371",
+                color: "white",
+                padding: "2px 6px",
+                borderRadius: 4,
+                margin: "0 2px",
+                fontWeight: 600,
+              }}
+            >
+              {part.content}
+            </span>
+          );
+        }
+        return null;
+      })}
+    </Text>
+  );
+
   return (
     <Panel id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
@@ -36,14 +71,14 @@ export const TextbookViewer = ({ id }) => {
       </PanelHeader>
 
       {data.sections.map((sec, idx) => (
-        <Group key={idx} header={<Title level="2" style={{ padding: '12px 16px' }}>{sec.title}</Title>}>
+        <Group key={idx} header={<Title level="2" style={{ padding: "12px 16px" }}>{sec.title}</Title>}>
           {sec.subsections.map((sub, sIdx) => (
             <Div key={sIdx}>
               <Title level="3" style={{ marginBottom: 8 }}>{sub.heading}</Title>
 
               {sub.blocks.map((block, bIdx) => {
                 if (block.type === "paragraph") {
-                  return <Text key={bIdx} style={{ marginBottom: 8 }}>{block.content}</Text>;
+                  return renderParagraph(block.content, bIdx);
                 }
 
                 if (block.type === "list") {
@@ -63,7 +98,7 @@ export const TextbookViewer = ({ id }) => {
                     <div key={bIdx} style={{ textAlign: "center", margin: "16px 0" }}>
                       <img
                         src={block.content.src}
-                        alt={block.content.alt || ''}
+                        alt={block.content.alt || ""}
                         style={{ maxWidth: "100%", borderRadius: 8 }}
                       />
                       {block.content.alt && (

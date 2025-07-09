@@ -4,7 +4,6 @@ import puppeteer from 'puppeteer';
 import { fileURLToPath } from 'url';
 import https from 'https';
 
-// Получаем __dirname (для ES-модулей)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -36,7 +35,7 @@ const pages = [
   },
 ];
 
-// Утилита для скачивания изображения
+// Утилита для скачивания изображений
 const downloadImage = (url, dest) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
@@ -55,29 +54,81 @@ const downloadImage = (url, dest) => {
   });
 };
 
-// Основной парсер
 const run = async () => {
   console.log('🚀 Запуск парсера DROM.RU\n');
 
-  // Создание папки под изображения
   if (!fs.existsSync(imageDir)) {
     fs.mkdirSync(imageDir, { recursive: true });
     console.log('📁 Создана папка для изображений:', imageDir);
   }
 
-  const browser = await puppeteer.launch({ headless: 'new' });
-  const page = await browser.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    timeout: 120000,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
 
+  const page = await browser.newPage();
   const textbook = {};
 
   for (const pageCfg of pages) {
     console.log(`🔎 Парсинг: ${pageCfg.title}`);
     console.log(`📥 Загружаем: ${pageCfg.url}`);
 
-    await page.goto(pageCfg.url, { waitUntil: 'domcontentloaded' });
+    try {
+      await page.goto(pageCfg.url, {
+        waitUntil: 'networkidle2',
+        timeout: 120000,
+      });
+      console.log(`✅ Страница загружена: ${pageCfg.url}`);
+    } catch (err) {
+      console.error(`❌ Ошибка загрузки: ${pageCfg.url}`, err);
+      continue;
+    }
+
+    await page.evaluate(() => {
+      const replaceStars = (el) => {
+        if (el.nodeType === Node.TEXT_NODE) {
+          el.textContent = el.textContent.replace(/ ?<\*>/g, '⭐');
+        }
+        el.childNodes.forEach(replaceStars);
+      };
+      document.body.childNodes.forEach(replaceStars);
+    });
 
     const sections = await page.evaluate(() => {
-      const clean = t => (t || '').replace(/\s+/g, ' ').trim();
+      const clean = (t) => (t || '').replace(/\s+/g, ' ').trim();
+
+      const parseBoldQuotes = (text, isPoint12) => {
+        const parts = [];
+        let lastIndex = 0;
+        const regex = /["«']([^"»']+)["»']/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+          const words = match[1].trim().split(/\s+/);
+          if (match.index > lastIndex) {
+            parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+          }
+
+          if (isPoint12 && words.length <= 2) {
+            parts.push({
+              type: 'highlight',
+              content: match[1],
+            });
+          } else {
+            parts.push({ type: 'bold', content: match[1] });
+          }
+
+          lastIndex = regex.lastIndex;
+        }
+
+        if (lastIndex < text.length) {
+          parts.push({ type: 'text', content: text.slice(lastIndex) });
+        }
+
+        return parts;
+      };
+
       const result = [];
       let currentSection = null;
 
@@ -92,29 +143,31 @@ const run = async () => {
           if (currentSection) result.push(currentSection);
           currentSection = {
             title: clean(h3.textContent),
-            subsections: []
+            subsections: [],
           };
         }
 
-        // Изображение вне текста
         if (image && currentSection) {
           const src = image.getAttribute('src');
           const alt = image.getAttribute('alt') || '';
           currentSection.subsections.push({
             heading: 'Иллюстрация',
-            blocks: [{ type: 'image', content: { src, alt } }]
+            blocks: [{ type: 'image', content: { src, alt } }],
           });
         }
 
         if (h4 && content && currentSection) {
           const blocks = [];
+          const isPoint12 = h4.textContent.includes('1.2');
+
           content.childNodes.forEach(node => {
             if (node.nodeType !== Node.ELEMENT_NODE) return;
-
             const tag = node.tagName;
+
             if (tag === 'P') {
               const txt = clean(node.textContent);
-              if (txt) blocks.push({ type: 'paragraph', content: txt });
+              const parts = parseBoldQuotes(txt, isPoint12);
+              blocks.push({ type: 'paragraph', content: parts });
             } else if (tag === 'UL' || tag === 'OL') {
               const items = Array.from(node.querySelectorAll('li')).map(li => clean(li.textContent));
               blocks.push({ type: 'list', ordered: tag === 'OL', items });
@@ -129,7 +182,7 @@ const run = async () => {
 
           currentSection.subsections.push({
             heading: clean(h4.textContent),
-            blocks
+            blocks,
           });
         }
       });
@@ -138,7 +191,8 @@ const run = async () => {
       return result;
     });
 
-    // Обработка изображений
+    console.log(`✅ Разделов обработано: ${sections.length}`);
+
     for (const section of sections) {
       for (const subsection of section.subsections) {
         for (const block of subsection.blocks) {
@@ -168,13 +222,13 @@ const run = async () => {
       sections,
     };
 
-    console.log(`✅ Разделов обработано: ${sections.length}\n`);
+    console.log(`📦 Раздел "${pageCfg.title}" обработан\n`);
   }
 
   await browser.close();
-
   fs.writeFileSync(textbookPath, JSON.stringify(textbook, null, 2), 'utf8');
-  console.log('\n📘 Структура ПДД сохранена в', textbookPath);
+  console.log('✅ Готово! Структура ПДД сохранена в:', textbookPath);
 };
 
 run();
+
