@@ -29,9 +29,14 @@ const pages = [
     url: 'https://www.drom.ru/pdd/pdd/marking/',
   },
   {
-    id: 'faults',
+    id: 'malfunctions',
     title: 'Перечень неисправностей',
     url: 'https://www.drom.ru/pdd/pdd/fault_list/',
+  },
+  {
+    id: 'admission',
+    title: 'Основные положения по допуску',
+    url: 'https://www.drom.ru/pdd/pdd/permission/',
   },
 ];
 
