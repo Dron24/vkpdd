@@ -161,9 +161,10 @@ const run = async () => {
           });
         }
 
-        if (h4 && content && currentSection) {
+        if (content && currentSection) {
+          const headingText = h4 ? clean(h4.textContent) : currentSection.title;
+          const isPoint12 = headingText.includes('1.2');
           const blocks = [];
-          const isPoint12 = h4.textContent.includes('1.2');
 
           content.childNodes.forEach(node => {
             if (node.nodeType !== Node.ELEMENT_NODE) return;
@@ -186,7 +187,7 @@ const run = async () => {
           });
 
           currentSection.subsections.push({
-            heading: clean(h4.textContent),
+            heading: headingText,
             blocks,
           });
         }
@@ -236,4 +237,3 @@ const run = async () => {
 };
 
 run();
-
