@@ -1,123 +1,114 @@
-import {
-  Panel,
-  PanelHeader,
-  PanelHeaderBack,
-  Group,
-  Div,
-  Title,
-  Text,
-  Separator,
-} from "@vkontakte/vkui";
+import React, { useEffect, useState } from "react";
+import { Panel, PanelHeader, PanelHeaderBack, Group, Header, SimpleCell } from "@vkontakte/vkui";
 import { useRouteNavigator, useParams } from "@vkontakte/vk-mini-apps-router";
-import textbookData from "../../assets/textbookData.json";
+import { BsJournalBookmark, BsSignStop, BsCapslock, BsWrenchAdjustableCircle, BsShieldLock } from "react-icons/bs";
 
 export const TextbookViewer = ({ id }) => {
   const navigator = useRouteNavigator();
-  const { section } = useParams();
-  const data = textbookData[section];
+  const { section } = useParams(); // section из URL
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!data) {
+  const sections = [
+    { id: 'rules', title: 'Правила дорожного движения', icon: <BsJournalBookmark size={26} /> },
+    { id: 'signs', title: 'Дорожные знаки', icon: <BsSignStop size={26} /> },
+    { id: 'marking', title: 'Дорожная разметка', icon: <BsCapslock size={26} /> },
+    { id: 'malfunctions', title: 'Перечень неисправностей', icon: <BsWrenchAdjustableCircle size={26} /> },
+    { id: 'admission', title: 'Основные положения по допуску', icon: <BsShieldLock size={26} /> },
+  ];
+
+  useEffect(() => {
+    if (!section) {
+      console.log("❌ Параметр section не передан.");
+      setLoading(false);
+      return;
+    }
+
+    console.log('❓ Проверка: Загрузка данных для раздела:', section);
+
+    setLoading(true);
+
+    fetch("/public/assets/textbookData.json")  // Убедитесь, что путь правильный
+      .then((res) => {
+        if (!res.ok) {
+          console.error(`❌ Ошибка загрузки JSON: ${res.statusText}`);
+          throw new Error("Ошибка загрузки файла JSON");
+        }
+        return res.json();
+      })
+      .then((json) => {
+        console.log('❓ Данные, полученные из JSON:', json);
+
+        const sectionFormatted = section ? section.toLowerCase().replace(/\s+/g, "-") : '';
+
+        const mainSection = json[sectionFormatted];
+
+        if (!mainSection || !mainSection.sections) {
+          console.error(`❌ Раздел не найден: ${sectionFormatted}`);
+          setData(null);
+          setLoading(false);
+          return;
+        }
+
+        const sectionData = mainSection.sections;
+
+        if (!sectionData) {
+          console.error(`❌ Подразделы не найдены для раздела ${sectionFormatted}`);
+          setData(null);
+          setLoading(false);
+          return;
+        }
+
+        setData({ title: mainSection.title, subsections: sectionData });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('❌ Ошибка загрузки textbookData:', err);
+        setData(null);
+        setLoading(false);
+      });
+  }, [section]);
+
+  if (loading) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
-          Раздел не найден
-        </PanelHeader>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />} />
+        Загрузка...
+      </Panel>
+    );
+  }
+
+  if (!data || !data.subsections) {
+    console.error('❌ Нет данных или подразделов.');
+    return (
+      <Panel id={id}>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Раздел не найден</PanelHeader>
         <Group>
-          <Div>Такого раздела не существует.</Div>
+          <SimpleCell>Такого раздела не существует или нет подразделов.</SimpleCell>
         </Group>
       </Panel>
     );
   }
 
-  const renderParagraph = (content, key) => (
-    <Text key={key} style={{ marginBottom: 8, lineHeight: 1.5 }}>
-      {content.map((part, index) => {
-        if (part.type === "text") {
-          return <span key={index}>{part.content}</span>;
-        }
-        if (part.type === "bold") {
-          return (
-            <strong key={index} style={{ fontWeight: 600 }}>
-              {part.content}
-            </strong>
-          );
-        }
-        if (part.type === "highlight") {
-          return (
-            <span
-              key={index}
-              style={{
-                backgroundColor: "#3cb371",
-                color: "white",
-                padding: "2px 6px",
-                borderRadius: 4,
-                margin: "0 2px",
-                fontWeight: 600,
-              }}
-            >
-              {part.content}
-            </span>
-          );
-        }
-        return null;
-      })}
-    </Text>
-  );
-
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
-        {data.title}
-      </PanelHeader>
-
-      {data.sections.map((sec, idx) => (
-        <Group key={idx} header={<Title level="2" style={{ padding: "12px 16px" }}>{sec.title}</Title>}>
-          {sec.subsections.map((sub, sIdx) => (
-            <Div key={sIdx}>
-              <Title level="3" style={{ marginBottom: 8 }}>{sub.heading}</Title>
-
-              {sub.blocks.map((block, bIdx) => {
-                if (block.type === "paragraph") {
-                  return renderParagraph(block.content, bIdx);
-                }
-
-                if (block.type === "list") {
-                  return (
-                    <ul key={bIdx} style={{ paddingLeft: 16, marginBottom: 8 }}>
-                      {block.items.map((item, i) => (
-                        <li key={i} style={{ marginBottom: 4 }}>
-                          <Text>{item}</Text>
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }
-
-                if (block.type === "image") {
-                  return (
-                    <div key={bIdx} style={{ textAlign: "center", margin: "16px 0" }}>
-                      <img
-                        src={block.content.src}
-                        alt={block.content.alt || ""}
-                        style={{ maxWidth: "100%", borderRadius: 8 }}
-                      />
-                      {block.content.alt && (
-                        <Text style={{ fontSize: 12, color: "#888", marginTop: 4 }}>
-                          {block.content.alt}
-                        </Text>
-                      )}
-                    </div>
-                  );
-                }
-
-                return null;
-              })}
-
-              <Separator style={{ margin: "16px 0" }} />
-            </Div>
-          ))}
-        </Group>
-      ))}
+      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>{data.title}</PanelHeader>
+      <Group header={<Header mode="primary">Подразделы</Header>}>
+        {data.subsections.map((sub, idx) => (
+          <SimpleCell
+            key={idx}
+            before={sections.find((section) => section.id === sub.id)?.icon || <BsJournalBookmark size={26} />}
+            onClick={() => {
+              const subHeading = sub.title.toLowerCase().replace(/\s+/g, "-");
+              navigator.push(`/textbook/${section}/${encodeURIComponent(subHeading)}`);
+            }}
+            expandable="true"
+          >
+            {sub.title}
+          </SimpleCell>
+        ))}
+      </Group>
     </Panel>
   );
 };
+

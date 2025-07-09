@@ -13,7 +13,8 @@ export const DEFAULT_VIEW_PANELS = {
   ROOT: 'root',
   TICKETS_PDD: 'tickets_pdd',
   TEXTBOOK: 'textbook',
-  TEXTBOOK_VIEWER: 'textbook_viewer', // 👈 универсальный компонент
+  TEXTBOOK_VIEWER: 'textbook_viewer',
+  TEXTBOOK_SUBSECTION: 'textbook_subsection',
   TESTS: 'tests',
   PROGRESS: 'progress',
   PROFILE: 'profile',
@@ -28,9 +29,8 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.PROGRESS, `/progress`, []),
       createPanel(DEFAULT_VIEW_PANELS.PROFILE, `/profile`, []),
       createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK, `/textbook`, []),
-
-      // ✅ Один универсальный маршрут вместо отдельных
       createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_VIEWER, `/textbook/:section`, []),
+      createPanel(DEFAULT_VIEW_PANELS.TEXTBOOK_SUBSECTION, `/textbook/:section/:sub`, []),
     ]),
   ]),
 ]);

@@ -14,22 +14,22 @@ import {
   Tickets_pdd,
   Textbook,
   TextbookViewer,
+  TextbookSubsection,
   Tests,
   Progress,
   Profile,
 } from './panels';
 
-import { DEFAULT_VIEW_PANELS } from './routes';
+import { DEFAULT_VIEW, DEFAULT_VIEW_PANELS } from './routes';
 import AppTabbar from './components/AppTabbar';
 import RedirectToHome from './panels/RedirectToHome';
 
 const TABBAR_HEIGHT = 56;
 
 export const App = () => {
-  const {
-    view: activeView,
-    panel: activePanel = DEFAULT_VIEW_PANELS.ROOT,
-  } = useActiveVkuiLocation();
+  const loc = useActiveVkuiLocation() || {};
+  const activeView = loc.view || DEFAULT_VIEW;
+  const activePanel = loc.panel || DEFAULT_VIEW_PANELS.ROOT;
 
   const platform = usePlatform();
   const isDev = process.env.NODE_ENV === 'development';
@@ -69,6 +69,7 @@ export const App = () => {
               <Tickets_pdd id={DEFAULT_VIEW_PANELS.TICKETS_PDD} />
               <Textbook id={DEFAULT_VIEW_PANELS.TEXTBOOK} />
               <TextbookViewer id={DEFAULT_VIEW_PANELS.TEXTBOOK_VIEWER} />
+              <TextbookSubsection id={DEFAULT_VIEW_PANELS.TEXTBOOK_SUBSECTION} />
               <Tests id={DEFAULT_VIEW_PANELS.TESTS} />
               <Progress id={DEFAULT_VIEW_PANELS.PROGRESS} />
             </View>
