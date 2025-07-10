@@ -7,11 +7,9 @@ import https from 'https';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Пути
 const textbookPath = path.join(__dirname, '../src/assets/textbookData.json');
 const imageDir = path.join(__dirname, '../public/images/pdd');
 
-// Страницы для парсинга
 const pages = [
   {
     id: 'rules',
@@ -40,7 +38,6 @@ const pages = [
   },
 ];
 
-// Утилита для скачивания изображений
 const downloadImage = (url, dest) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
@@ -115,11 +112,8 @@ const run = async () => {
             parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
           }
 
-          if (isPoint12 && words.length <= 2) {
-            parts.push({
-              type: 'highlight',
-              content: match[1],
-            });
+          if (isPoint12 && words.length <= 6) {
+            parts.push({ type: 'highlight', content: match[1] });
           } else {
             parts.push({ type: 'bold', content: match[1] });
           }
@@ -163,7 +157,7 @@ const run = async () => {
 
         if (content && currentSection) {
           const headingText = h4 ? clean(h4.textContent) : currentSection.title;
-          const isPoint12 = headingText.includes('1.2');
+          const isPoint12 = /(^|\s)1\.2(\s|$)/.test(headingText);
           const blocks = [];
 
           content.childNodes.forEach(node => {
@@ -237,3 +231,4 @@ const run = async () => {
 };
 
 run();
+

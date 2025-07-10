@@ -6,14 +6,31 @@ import { useTextbookData } from "../../hooks/useTextbookData";
 
 export const TextbookSubsection = ({ id }) => {
   const navigator = useRouteNavigator();
-  const { section, sub } = useParams(); // section = rules, sub = "1. общие положения"
+  const { section, sub } = useParams(); // хуки useRouteNavigator, useParams
 
+  // хуки вызываются ДО любых условий
   const { data, loading } = useTextbookData(section);
+
+  // теперь уже можно возвращать условно
+  if (!section || !sub) {
+    return (
+      <Panel id={id}>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+          Ошибка
+        </PanelHeader>
+        <Group>
+          <Div>Некорректный URL. Параметры section или sub отсутствуют.</Div>
+        </Group>
+      </Panel>
+    );
+  }
 
   if (loading) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Загрузка...</PanelHeader>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+          Загрузка...
+        </PanelHeader>
         <AnimatedSpinner />
       </Panel>
     );
@@ -22,7 +39,9 @@ export const TextbookSubsection = ({ id }) => {
   if (!data || !data.sections) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Раздел не найден</PanelHeader>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+          Раздел не найден
+        </PanelHeader>
         <Group>
           <Div>Такого раздела не существует.</Div>
         </Group>
@@ -30,15 +49,18 @@ export const TextbookSubsection = ({ id }) => {
     );
   }
 
-  // ✅ Ищем section.title
+  // безопасный поиск
   const matchedSection = data.sections.find(
-    (s) => s.title.toLowerCase().replace(/\s+/g, "-") === sub.toLowerCase()
+    (s) =>
+      s?.title?.toLowerCase().replace(/\s+/g, "-") === sub?.toLowerCase()
   );
 
   if (!matchedSection) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>Раздел не найден</PanelHeader>
+        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+          Раздел не найден
+        </PanelHeader>
         <Group>
           <Div>Раздел не найден по адресу: {sub}</Div>
         </Group>
@@ -46,6 +68,7 @@ export const TextbookSubsection = ({ id }) => {
     );
   }
 
+  // основной рендер
   return (
     <Panel id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
@@ -55,21 +78,31 @@ export const TextbookSubsection = ({ id }) => {
         <Div>
           {matchedSection.subsections.map((subsection, idx) => (
             <div key={idx} style={{ marginBottom: 16 }}>
-              <Text weight="2" style={{ marginBottom: 8 }}>{subsection.heading}</Text>
+              <Text weight="2" style={{ marginBottom: 8 }}>
+                {subsection.heading}
+              </Text>
               {subsection.blocks?.map((block, bIdx) => {
                 if (block.type === "paragraph") {
                   return (
-                    <Text key={bIdx} style={{ marginBottom: 8, lineHeight: 1.5 }}>
+                    <Text
+                      key={bIdx}
+                      style={{ marginBottom: 8, lineHeight: 1.5 }}
+                    >
                       {block.content.map((part, i) => {
                         if (part.type === "highlight") {
                           return (
-                            <span key={i} style={{
-                              backgroundColor: "#4BB34B",
-                              color: "white",
-                              padding: "2px 4px",
-                              borderRadius: "4px",
-                              marginRight: 4,
-                            }}>{part.content}</span>
+                            <span
+                              key={i}
+                              style={{
+                                backgroundColor: "#4BB34B",
+                                color: "white",
+                                padding: "2px 4px",
+                                borderRadius: "4px",
+                                marginRight: 4,
+                              }}
+                            >
+                              {part.content}
+                            </span>
                           );
                         }
                         if (part.type === "bold") {

@@ -196,7 +196,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Дневные ходовые огни"
                   },
                   {
@@ -261,7 +261,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Маршрутное транспортное средство"
                   },
                   {
@@ -274,7 +274,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Механическое транспортное средство"
                   },
                   {
@@ -443,7 +443,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Организованная перевозка группы детей"
                   },
                   {
@@ -456,7 +456,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Организованная транспортная колонна"
                   },
                   {
@@ -469,7 +469,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Организованная пешая колонна"
                   },
                   {
@@ -521,7 +521,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Парковка (парковочное место)"
                   },
                   {
@@ -612,7 +612,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Пешеходная и велосипедная дорожка (велопешеходная дорожка)"
                   },
                   {
@@ -660,7 +660,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Полоса для велосипедистов"
                   },
                   {
@@ -760,7 +760,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Разрешенная максимальная масса"
                   },
                   {
@@ -794,7 +794,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Средство индивидуальной мобильности"
                   },
                   {
@@ -820,7 +820,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Темное время суток"
                   },
                   {
@@ -859,7 +859,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Уступить дорогу (не создавать помех)"
                   },
                   {
@@ -872,7 +872,7 @@
                 "type": "paragraph",
                 "content": [
                   {
-                    "type": "bold",
+                    "type": "highlight",
                     "content": "Участник дорожного движения"
                   },
                   {
@@ -7145,7 +7145,7 @@
                     "content": "Особенности: Знак устанавливается перед пересечением велосипедной дорожки, обозначенной знаком 4.4 "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "Велосипедная дорожка"
                   },
                   {
@@ -17508,7 +17508,7 @@
                     "content": "Дублирование предупреждающих, запрещающих дорожных знаков и знака "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "Инвалид"
                   },
                   {
@@ -17542,7 +17542,7 @@
                     "content": "Дублирование дорожного знака 6.22 "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "Фотовидеофиксация"
                   },
                   {
@@ -17611,7 +17611,7 @@
                     "content": "Дублирование дорожного знака 5.39 "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "Велосипедная зона"
                   }
                 ]
@@ -17710,7 +17710,7 @@
                     "content": "(Прим. В народе разметка называется "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "вафельной"
                   },
                   {
@@ -17718,7 +17718,7 @@
                     "content": " или "
                   },
                   {
-                    "type": "highlight",
+                    "type": "bold",
                     "content": "вафельницей"
                   },
                   {
