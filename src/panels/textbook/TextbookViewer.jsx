@@ -5,7 +5,7 @@ import { BsJournalBookmark, BsSignStop, BsCapslock, BsWrenchAdjustableCircle, Bs
 
 export const TextbookViewer = ({ id }) => {
   const navigator = useRouteNavigator();
-  const { section } = useParams(); // section из URL
+  const { section } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -25,10 +25,9 @@ export const TextbookViewer = ({ id }) => {
     }
 
     console.log('❓ Проверка: Загрузка данных для раздела:', section);
-
     setLoading(true);
 
-    fetch("/public/assets/textbookData.json")  // Убедитесь, что путь правильный
+    fetch(`${import.meta.env.BASE_URL}assets/textbookData.json`) // ✅ Универсальный путь
       .then((res) => {
         if (!res.ok) {
           console.error(`❌ Ошибка загрузки JSON: ${res.statusText}`);
@@ -40,7 +39,6 @@ export const TextbookViewer = ({ id }) => {
         console.log('❓ Данные, полученные из JSON:', json);
 
         const sectionFormatted = section ? section.toLowerCase().replace(/\s+/g, "-") : '';
-
         const mainSection = json[sectionFormatted];
 
         if (!mainSection || !mainSection.sections) {
@@ -111,4 +109,3 @@ export const TextbookViewer = ({ id }) => {
     </Panel>
   );
 };
-
