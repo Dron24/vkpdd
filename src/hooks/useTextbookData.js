@@ -1,36 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-export const useTextbookData = (section) => {
+export const useTextbookData = (sectionKey) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      // Проверяем, существует ли section, прежде чем искать
-      if (!section) {
-        console.error('❌ Не передан параметр section');
-        setLoading(false);
-        return;
-      }
-
-      // Ищем раздел в JSON
-      const sectionData = textbookData.rules.sections.find((s) => 
-        s.title && s.title.toLowerCase().replace(/\s+/g, "-") === section.toLowerCase()
-      );
-      
-      // Проверка, если раздел не найден
-      if (!sectionData) {
-        console.error(`❌ Раздел с названием "${section}" не найден.`);
-      }
-
-      setData(sectionData);
-    } catch (err) {
-      console.error('❌ Ошибка загрузки textbookData:', err);
-    } finally {
-      setLoading(false);
+    if (!sectionKey) {
+      console.error("❌ Параметр section не передан");
+      return;
     }
-  }, [section]);
+
+    setLoading(true);
+
+    const formattedKey = sectionKey.toLowerCase().replace(/\s+/g, "-");
+
+    fetch(`${import.meta.env.BASE_URL}assets/textbookData.json`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Ошибка загрузки JSON");
+        }
+        return res.json();
+      })
+      .then((json) => {
+        const section = json[formattedKey];
+        if (!section || !section.sections) {
+          console.error(`❌ Раздел "${formattedKey}" не найден в JSON`);
+          setData(null);
+        } else {
+          setData(section);
+        }
+      })
+      .catch((err) => {
+        console.error("❌ Ошибка загрузки textbookData:", err);
+        setData(null);
+      })
+      .finally(() => setLoading(false));
+  }, [sectionKey]);
 
   return { data, loading };
 };
