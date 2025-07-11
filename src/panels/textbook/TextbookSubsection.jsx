@@ -1,25 +1,31 @@
-import React from 'react';
-import { Panel, PanelHeader, PanelHeaderBack, Group, Div, Text } from "@vkontakte/vkui";
+import React from "react";
+import {
+  Panel,
+  PanelHeader,
+  PanelHeaderBack,
+  Group,
+  Div,
+  Text,
+} from "@vkontakte/vkui";
 import { AnimatedSpinner } from "../../components/AnimatedSpinner";
 import { useRouteNavigator, useParams } from "@vkontakte/vk-mini-apps-router";
 import { useTextbookData } from "../../hooks/useTextbookData";
 
 export const TextbookSubsection = ({ id }) => {
   const navigator = useRouteNavigator();
-  const { section, sub } = useParams(); // хуки useRouteNavigator, useParams
-
-  // хуки вызываются ДО любых условий
+  const { section, sub } = useParams();
   const { data, loading } = useTextbookData(section);
 
-  // теперь уже можно возвращать условно
   if (!section || !sub) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+        <PanelHeader
+          before={<PanelHeaderBack onClick={() => navigator.back()} />}
+        >
           Ошибка
         </PanelHeader>
         <Group>
-          <Div>Некорректный URL. Параметры section или sub отсутствуют.</Div>
+          <Div>Некорректный URL. Параметры отсутствуют.</Div>
         </Group>
       </Panel>
     );
@@ -28,7 +34,9 @@ export const TextbookSubsection = ({ id }) => {
   if (loading) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+        <PanelHeader
+          before={<PanelHeaderBack onClick={() => navigator.back()} />}
+        >
           Загрузка...
         </PanelHeader>
         <AnimatedSpinner />
@@ -36,10 +44,12 @@ export const TextbookSubsection = ({ id }) => {
     );
   }
 
-  if (!data || !data.sections) {
+  if (!data?.sections) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+        <PanelHeader
+          before={<PanelHeaderBack onClick={() => navigator.back()} />}
+        >
           Раздел не найден
         </PanelHeader>
         <Group>
@@ -49,29 +59,31 @@ export const TextbookSubsection = ({ id }) => {
     );
   }
 
-  // безопасный поиск
   const matchedSection = data.sections.find(
     (s) =>
-      s?.title?.toLowerCase().replace(/\s+/g, "-") === sub?.toLowerCase()
+      s.title.toLowerCase().replace(/\s+/g, "-") === sub.toLowerCase()
   );
 
   if (!matchedSection) {
     return (
       <Panel id={id}>
-        <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
-          Раздел не найден
+        <PanelHeader
+          before={<PanelHeaderBack onClick={() => navigator.back()} />}
+        >
+          Подраздел не найден
         </PanelHeader>
         <Group>
-          <Div>Раздел не найден по адресу: {sub}</Div>
+          <Div>Адрес: {sub}</Div>
         </Group>
       </Panel>
     );
   }
 
-  // основной рендер
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={() => navigator.back()} />}>
+      <PanelHeader
+        before={<PanelHeaderBack onClick={() => navigator.back()} />}
+      >
         {matchedSection.title}
       </PanelHeader>
       <Group>
@@ -81,6 +93,7 @@ export const TextbookSubsection = ({ id }) => {
               <Text weight="2" style={{ marginBottom: 8 }}>
                 {subsection.heading}
               </Text>
+
               {subsection.blocks?.map((block, bIdx) => {
                 if (block.type === "paragraph") {
                   return (
@@ -88,31 +101,31 @@ export const TextbookSubsection = ({ id }) => {
                       key={bIdx}
                       style={{ marginBottom: 8, lineHeight: 1.5 }}
                     >
-                      {block.content.map((part, i) => {
-                        if (part.type === "highlight") {
-                          return (
-                            <span
-                              key={i}
-                              style={{
-                                backgroundColor: "#4BB34B",
-                                color: "white",
-                                padding: "2px 4px",
-                                borderRadius: "4px",
-                                marginRight: 4,
-                              }}
-                            >
-                              {part.content}
-                            </span>
-                          );
-                        }
-                        if (part.type === "bold") {
-                          return <strong key={i}>{part.content}</strong>;
-                        }
-                        return <span key={i}>{part.content}</span>;
-                      })}
+                      {block.content.map((part, i) => (
+                        <span key={i}>{part.content}</span>
+                      ))}
                     </Text>
                   );
                 }
+
+                if (block.type === "image") {
+                  return (
+                    <div
+                      key={bIdx}
+                      style={{ margin: "12px 0", textAlign: "center" }}
+                    >
+                      <img
+                        src={block.content.src}
+                        alt={block.content.alt || ""}
+                        style={{ maxWidth: "100%", borderRadius: 8 }}
+                        onError={() =>
+                          console.error("Не загрузилось:", block.content.src)
+                        }
+                      />
+                    </div>
+                  );
+                }
+
                 return null;
               })}
             </div>
